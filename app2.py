@@ -89,7 +89,7 @@ def load_models():
 
 def load_classifier():
     # Load the saved model
-    return joblib.load(r"D:\Users\ikejjosh\Documents\COCOMO\06_NNs\debris_cone\Voting Classifier.pkl")
+    return joblib.load("Voting Classifier.pkl")
 
 
 @st.cache_resource

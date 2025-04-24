@@ -1,5 +1,7 @@
 streamlit
 tensorflow
+joblib
 numpy
 pandas
 matplotlib
+plotly

@@ -7,7 +7,7 @@ import warnings
 from datetime import timedelta
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
-import numpy as np
+
 
 def compute_geometry(Mfuel, Ffuel, Fstruct, Porosity, Rflat, Alpha):
     Pi = 4.0 * np.arctan(1.0)

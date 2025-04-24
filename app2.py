@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import tensorflow as tf
+tf.compat.v1.reset_default_graph() 
 from sklearn.preprocessing import MinMaxScaler
 import joblib
 import os
@@ -171,32 +172,21 @@ with col2:
     classifier = load_classifier()
     print(classifier.predict([user_inputs_scaled]))
     if classifier.predict([user_inputs_scaled]) == 1:
-        st.markdown("### ✅ Kühlung möglich:")
+        st.markdown("### ✅ Kühlung möglich:")    
 
         # Scale input and make predictions
         input_array = np.array(user_inputs_scaled).reshape(1, -1)
         predictions = [model.predict(input_array)[0][0] for model in models]
         avg = np.mean(predictions)
         std = np.std(predictions)
-        
-        # Inverse transform the predictions
         scaled_avg = scaler_y.inverse_transform([[avg]])[0][0]
         scaled_std = scaler_y.inverse_transform([[std]])[0][0]
 
-        # Check for valid values before using timedelta
-        if isinstance(scaled_avg, (int, float)) and scaled_avg >= 0:
-            predicted_duration = timedelta(seconds=scaled_avg)
-        else:
-            st.markdown("### ⚠️ Invalid prediction for average quench time.")
-            predicted_duration = timedelta(seconds=0)  # Default value for error case
+        # Convert to timedelta for better presentation
+        predicted_duration = timedelta(seconds=scaled_avg)
+        uncertainty_duration = timedelta(seconds=scaled_std)
 
-        if isinstance(scaled_std, (int, float)) and scaled_std >= 0:
-            uncertainty_duration = timedelta(seconds=scaled_std)
-        else:
-            st.markdown("### ⚠️ Invalid prediction for uncertainty in quench time.")
-            uncertainty_duration = timedelta(seconds=0)  # Default value for error case
-
-        # Format timedelta for display
+        # Display prediction and uncertainty results in right panel
         def format_timedelta(td):
             total_seconds = int(td.total_seconds())
             hours, remainder = divmod(total_seconds, 3600)

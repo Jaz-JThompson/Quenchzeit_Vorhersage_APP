@@ -8,3 +8,4 @@ matplotlib==3.10.1
 xgboost==3.0.0
 plotly==6.0.1
 joblib==1.4.2
+lightgbm==4.1.0

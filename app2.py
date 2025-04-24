@@ -124,7 +124,10 @@ col1, col2 = st.columns([1, 2])  # Left column (1 part) and right column (2 part
 
 # Left column for parameter sliders
 with col1:
-    st.title("KI Vorhersage in Schüttbett Quenchen")
+    # add picture
+    st.image("logo_long.png", use_container_width=True)
+    
+    st.title("Schüttbett-KI: Vorhersage des Quenchverhaltens")
 
     # Build sliders with manually defined parameters
     user_inputs_scaled = []

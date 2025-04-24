@@ -172,39 +172,48 @@ with col2:
     classifier = load_classifier()
     print(classifier.predict([user_inputs_scaled]))
     if classifier.predict([user_inputs_scaled]) == 1:
-        st.markdown("### ✅ Kühlung möglich:")    
+        st.markdown("### ✅ Kühlung möglich:")
 
-        # Scale input and make predictions
+        # Input vorbereiten und Vorhersagen durchführen
         input_array = np.array(user_inputs_scaled).reshape(1, -1)
         predictions = [model.predict(input_array)[0][0] for model in models]
-        avg = np.mean(predictions)
-        std = np.std(predictions)
-        scaled_avg = scaler_y.inverse_transform([[avg]])[0][0]
-        scaled_std = scaler_y.inverse_transform([[std]])[0][0]
 
-        # Convert to timedelta for better presentation
-        predicted_duration = timedelta(seconds=scaled_avg)
-        uncertainty_duration = timedelta(seconds=scaled_std)
+        if predictions and len(predictions) > 0:
+            avg = np.mean(predictions)
+            std = np.std(predictions)
+            scaled_avg = scaler_y.inverse_transform([[avg]])[0][0]
+            scaled_std = scaler_y.inverse_transform([[std]])[0][0]
 
-        # Display prediction and uncertainty results in right panel
-        def format_timedelta(td):
-            total_seconds = int(td.total_seconds())
-            hours, remainder = divmod(total_seconds, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            return f"{hours}h {minutes}m {seconds}s"
+            # Umrechnung in Zeitformat
+            try:
+                predicted_duration = timedelta(seconds=scaled_avg)
+                uncertainty_duration = timedelta(seconds=scaled_std)
 
-        st.markdown(f"## Vorhersage der Quenchzeit: {format_timedelta(predicted_duration)}")
-        st.caption(f"Vorhersage der Quenchzeit: {scaled_avg:.2f} Sekunden")
-        st.markdown(f"### Unsicherheit: {format_timedelta(uncertainty_duration)}")
+                def format_timedelta(td):
+                    total_seconds = int(td.total_seconds())
+                    hours, remainder = divmod(total_seconds, 3600)
+                    minutes, seconds = divmod(remainder, 60)
+                    return f"{hours}h {minutes}m {seconds}s"
 
-        # Plot ensemble predictions
-        predictions = scaler_y.inverse_transform(np.array(predictions).reshape(-1, 1)).flatten()
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(y=predictions, mode='lines+markers', name='Vorhersage'))
-        fig.update_layout(title="Ensemble Predictions [s]",
-                        xaxis_title="Modelle",
-                        yaxis_title="Vorhersage der Quenchzeit [s]",)
+                st.markdown(f"## Vorhersage der Quenchzeit: {format_timedelta(predicted_duration)}")
+                st.caption(f"Vorhersage der Quenchzeit: {scaled_avg:.2f} Sekunden")
+                st.markdown(f"### Unsicherheit: {format_timedelta(uncertainty_duration)}")
 
-        st.plotly_chart(fig)
+                # Plot erstellen
+                predictions = scaler_y.inverse_transform(np.array(predictions).reshape(-1, 1)).flatten()
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(y=predictions, mode='lines+markers', name='Vorhersage'))
+                fig.update_layout(
+                    title="Ensemble-Vorhersagen [s]",
+                    xaxis_title="Modelle",
+                    yaxis_title="Vorhersage der Quenchzeit [s]"
+                )
+                st.plotly_chart(fig)
+
+            except Exception as e:
+                st.error(f"Fehler bei der Umrechnung der Vorhersage: {e}")
+        else:
+            st.warning("⚠️ Keine gültigen Vorhersagen verfügbar. Bitte Eingaben überprüfen.")
+
     else:
         st.markdown("### 🚫 Kühlung nicht möglich, Schüttbett schmilzt wieder")

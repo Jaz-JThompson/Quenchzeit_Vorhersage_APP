@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import tensorflow as tf
+from sklearn.preprocessing import MinMaxScaler
 import joblib
 import os
 import warnings

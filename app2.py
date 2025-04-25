@@ -87,7 +87,7 @@ warnings.filterwarnings("ignore", message=".*does not have valid feature names.*
 
 @st.cache_resource
 def load_models():
-    return [tf.keras.models.load_model(f"Model_{i}.keras") for i in range(6) if os.path.exists(f"Model_{i}.keras")]
+    return [tf.keras.models.load_model(f"model_{i}.keras") for i in range(6) if os.path.exists(f"model_{i}.keras")]
 
 def load_classifier():
     # Load the saved model

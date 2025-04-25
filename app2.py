@@ -177,7 +177,7 @@ with col2:
         # Input vorbereiten und Vorhersagen durchführen
         input_array = np.array(user_inputs_scaled).reshape(1, -1)
         predictions = [model.predict(input_array)[0][0] for model in models]
-        st.write("Raw Predictions:", predictions)
+        print("Raw Predictions:", predictions)
         if predictions and len(predictions) > 0:
             avg = np.mean(predictions)
             std = np.std(predictions)

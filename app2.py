@@ -235,7 +235,7 @@ with col2:
                     minutes, seconds = divmod(remainder, 60)
                     return f"{hours}h {minutes}m {seconds}s"
 
-                st.markdown(f"## Vorhersage der Quenchzeit: {format_timedelta(predicted_duration)}")
+                st.markdown(f"## Quenchzeit: {format_timedelta(predicted_duration)}")
                 #st.caption(f"Vorhersage der Quenchzeit: {scaled_avg:.2f} Sekunden")
                 st.markdown(f"### Unsicherheit: {format_timedelta(uncertainty_duration)}")
                 with st.expander("Was ist ein Unsicherheit?"):
